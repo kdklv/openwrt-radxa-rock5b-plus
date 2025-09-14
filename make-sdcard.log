@@ -1,0 +1,30 @@
+nohup: ignoring input
++ [ 6 -ne 5 ]
++ [ 6 -ne 6 ]
++ OUTPUT=/workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz
++ KERNELSIZE=16
++ KERNELDIR=/workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sysupgrade.img.gz.boot
++ KERNELPARTTYPE=83
++ ROOTFSSIZE=104
++ ROOTFSIMAGE=/workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/root.ext4
++ ROOTFSPARTTYPE=83
++ ALIGN=32768
++ rm -f /workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz
++ head=16
++ sect=63
++ ptgen -o /workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz -h 16 -s 63 -g -t 83 -p 16m -t 83 -p 104m -l 32768 -G 1
++ set 8192 16777216 16809984 109051904
++ KERNELOFFSET=16
++ KERNELSIZE=16777216
++ ROOTFSOFFSET=32832
++ ROOTFSSIZE=212992
++ [ -n  ]
++ dd if=/workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/root.ext4 of=/workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz bs=512 seek=32832 conv=notrunc
+212992+0 records in
+212992+0 records out
+109051904 bytes (109 MB, 104 MiB) copied, 1.97552 s, 55.2 MB/s
++ [ -n 1 ]
++ [ -n  ]
++ mkfs.fat --invariant -n kernel -C /workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz.kernel -S 512 16384
+mkfs.fat: file /workspaces/openwrt-radxa-rock5b-plus/openwrt/build_dir/target-aarch64_generic_musl/linux-rockchip_armv8/tmp/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz.kernel already exists
+mkfs.fat 4.2 (2021-01-31)

@@ -1,6 +1,18 @@
 # Building OpenWrt for Radxa Rock 5B+ on GitHub Codespaces
 
-This guide will help you build a custom OpenWrt image for the Radxa Rock 5B+ using GitHub Codespaces, which provides a Linux environment with case-sensitive filesystem and eliminates local Docker issues.
+## Why Build Custom Image Instead of Using Pre-built?
+
+The official OpenWrt downloads at [https://downloads.openwrt.org/snapshots/targets/rockchip/armv8/](https://downloads.openwrt.org/snapshots/targets/rockchip/armv8/) only provide **sysupgrade images** (`openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sysupgrade.img.gz`), which are designed for upgrading existing OpenWrt installations, **not for fresh SD card installations**.
+
+For a fresh installation on your Radxa Rock 5B+, you need an **SD card image** (`sdcard.img.gz`), which requires building from source.
+
+**Additionally, building custom gives you:**
+- ✅ **LTE/Cellular support** built-in (QMI protocol)
+- ✅ **Additional file systems** (NTFS, exFAT, etc.)
+- ✅ **Network tools** pre-installed
+- ✅ **USB dongles support** for initial setup
+
+This guide will help you build a custom OpenWrt SD card image using GitHub Codespaces, which eliminates macOS Docker and case-sensitivity issues.
 
 ## Prerequisites
 
@@ -113,11 +125,11 @@ echo "Installing build dependencies..."
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
      build-essential clang llvm lld gawk flex bison gperf \
-     libncurses5-dev libncursesw5-dev zlib1g-dev libssl-dev \
+    libncurses-dev zlib1g-dev libssl-dev \
     libelf-dev libgnutls28-dev gettext xsltproc rsync unzip zip \
-    file wget curl git python3 python3-distutils python3-dev \
+    file wget curl git python3 python3-dev \
     python3-setuptools python3-pyelftools swig qemu-utils \
-    upx-ucl time ca-certificates subversion
+    upx-ucl time ca-certificates subversion python3-pip
 
    # Clone OpenWrt source
 echo "Cloning OpenWrt source..."
@@ -154,8 +166,10 @@ echo "This will take 1-3 hours depending on Codespace specs..."
 echo "=== Build Complete ==="
 echo "End time: $(date)"
 echo ""
-echo "Your image should be located at:"
+echo "Your SD card image should be located at:"
 echo "openwrt/bin/targets/rockchip/armv8/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz"
+echo ""
+echo "This is the bootable SD card image you need (NOT the sysupgrade image)."
 echo ""
 echo "Download it using the Codespace file browser or with:"
 echo "ls -la openwrt/bin/targets/rockchip/armv8/"
@@ -197,13 +211,15 @@ echo "ls -la openwrt/bin/targets/rockchip/armv8/"
 
 ### Option A: Using Codespace File Browser
 1. **Navigate** to `openwrt/bin/targets/rockchip/armv8/`
-2. **Right-click** on `openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz`
+2. **Right-click** on `openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz` 
 3. **Select "Download"**
+
+⚠️ **Important**: Download the **`sdcard.img.gz`** file, NOT the `sysupgrade.img.gz` file!
 
 ### Option B: Using Terminal
 ```bash
-# Verify the image was created
-ls -la openwrt/bin/targets/rockchip/armv8/
+# Verify the SD card image was created
+ls -la openwrt/bin/targets/rockchip/armv8/*sdcard*
 
 # Check file size (should be ~100-200MB compressed)
 du -h openwrt/bin/targets/rockchip/armv8/openwrt-rockchip-armv8-radxa_rock-5b-plus-ext4-sdcard.img.gz

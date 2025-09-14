@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Minimal replacement for make_ext4fs used by gen_image_generic.sh
+# Usage: make_ext4fs -J -L label -l <size> output.img <source_dir>
+set -euo pipefail
+LABEL=""; SIZE=""; OUTPUT=""; SRC=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -J) SHIFTED=1; shift;;
+    -L) LABEL="$2"; shift 2;;
+    -l) SIZE="$2"; shift 2;;
+    *) if [ -z "$OUTPUT" ]; then OUTPUT="$1"; else SRC="$1"; fi; shift;;
+  esac
+done
+if [ -z "$OUTPUT" ] || [ -z "$SRC" ]; then
+  echo "Usage: make_ext4fs [-J] -L <label> -l <size> <output> <srcdir>" >&2
+  exit 2
+fi
+# create sparse file
+dd if=/dev/zero of="$OUTPUT" bs=1 count=0 seek=$SIZE
+# create filesystem
+mke2fs -t ext4 -L "$LABEL" -F -q "$OUTPUT"
+# populate using tar to preserve structure
+mkdir -p /tmp/mountsrc
+tar -C "$SRC" -c . | tar -C /tmp -x -f - || true
+# use debugfs or e2tools? We'll mount with loop to copy
+MNT=$(mktemp -d)
+sudo mount -o loop "$OUTPUT" "$MNT"
+# copy content
+cp -a "$SRC"/. "$MNT/"
+sync
+sudo umount "$MNT"
+rm -rf "$MNT"
+exit 0

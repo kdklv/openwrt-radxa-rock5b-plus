@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+# Minimal ptgen replacement: calculate offsets and sizes and print four numbers
+OUT=""
+HEAD=16
+SECT=63
+KERNSZ_M=0
+ROOTSZ_M=0
+ALIGN=0
+GUID=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) OUT="$2"; shift 2;;
+    -h) HEAD="$2"; shift 2;;
+    -s) SECT="$2"; shift 2;;
+    -t) TYPE="$2"; shift 2;;
+    -p)
+      if [ -z "$KERNSZ_M" ] || [ "$KERNSZ_M" -eq 0 ]; then
+        KERNSZ_M=$(echo "$2" | sed 's/[Mm]//')
+      else
+        ROOTSZ_M=$(echo "$2" | sed 's/[Mm]//')
+      fi
+      shift 2;;
+    -l) ALIGN="$2"; shift 2;;
+    *) shift;;
+  esac
+done
+# Calculate offsets in bytes: KERNELOFFSET at head*512 rounded up to alignment
+KERNELOFFSET=$((HEAD * 512))
+KERNELSIZE_BYTES=$((KERNSZ_M * 1024 * 1024))
+# place rootfs after kernel, aligned
+ROOTFSOFFSET=$(( (KERNELOFFSET + KERNELSIZE_BYTES + (ALIGN-1)) & ~(ALIGN-1) ))
+ROOTFSSIZE_BYTES=$((ROOTSZ_M * 1024 * 1024))
+# print four numbers: kernel_offset_bytes kernel_size_bytes rootfs_offset_bytes rootfs_size_bytes
+printf "%s %s %s %s" "$KERNELOFFSET" "$KERNELSIZE_BYTES" "$ROOTFSOFFSET" "$ROOTFSSIZE_BYTES"
+exit 0

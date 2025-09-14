@@ -1,0 +1,13 @@
+--- a/target/linux/rockchip/image/Makefile
++++ b/target/linux/rockchip/image/Makefile
+@@
++--- a
++++ b
++@@
++*** PATCHED: disable treating attribute-warning as error for kernel builds
++This patch appends -Wno-error=attribute-warning to KBUILD_CFLAGS when
++building the kernel to avoid test-fortify failures that treat attribute
++warnings as errors in some host compiler/toolchain combinations.
++
++---
++*** End Patch
